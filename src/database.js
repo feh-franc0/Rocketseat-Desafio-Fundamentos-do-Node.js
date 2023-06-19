@@ -25,6 +25,13 @@ export class Database {
     return data;
   }
 
+  findById(table, id) {
+    if (Array.isArray(this.#database[table])) {
+      return this.#database[table].find((item) => item.id === id) || null;
+    }
+    return null;
+  }
+
   insert(table, data) {
     if (Array.isArray(this.#database[table])) {
       this.#database[table].push(data);
