@@ -63,6 +63,14 @@ const server = http.createServer((req, res) => {
     req.on("end", () => {
       const { title, description } = JSON.parse(body);
 
+      if (title || description) {
+        res.statusCode = 400;
+        const response = {
+          message: "Task title and description are required.",
+        };
+        return res.end(JSON.stringify(response));
+      }
+
       const findTask = database.findById("tasks", taskId);
 
       if (findTask) {
