@@ -38,7 +38,7 @@ const server = http.createServer((req, res) => {
         id: randomUUID(),
         title: newTask.title,
         description: newTask.description,
-        completed_at: false,
+        completed_at: null,
         created_at: new Date().getTime(),
         updated_at: null,
       };
@@ -103,8 +103,7 @@ const server = http.createServer((req, res) => {
     const findTask = database.findById("tasks", taskId);
 
     if (findTask) {
-      findTask.completed_at = true;
-      findTask.updated_at = new Date().getTime();
+      findTask.completed_at = new Date().getTime();
       const updatedTask = database.update("tasks", taskId, findTask);
       if (updatedTask) {
         res.statusCode = 200;
