@@ -52,6 +52,7 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify(response));
     });
   } else if (req.url.startsWith("/tasks/") && req.method === "PUT") {
+
     const taskId = req.url.split("/")[2];
     console.log("taskId: ", taskId);
     let body = "";
@@ -65,8 +66,9 @@ const server = http.createServer((req, res) => {
       const findTask = database.findById("tasks", taskId);
 
       if (findTask) {
-        findTask.title = title || findTask.title;
-        findTask.description = description || findTask.title;
+
+        findTask.title = title
+        findTask.description = description
         findTask.updated_at = new Date().getTime();
 
         const updatedTask = database.update("tasks", taskId, findTask);
@@ -90,6 +92,7 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify(response));
       }
     });
+
   } else if (
     req.url.startsWith("/tasks/") &&
     req.url.endsWith("/complete") &&
