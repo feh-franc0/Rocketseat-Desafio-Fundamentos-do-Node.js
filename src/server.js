@@ -54,9 +54,10 @@ const server = http.createServer((req, res) => {
     });
   } else if (req.url === '/tasks/import' && req.method === 'POST') {
     //* importar csv com a lib csv-parse
-    // ? Utilize o Curl
+    // ? Use Curl
     // ? curl -X POST -H "Content-Type: text/csv" --data-binary @arq.csv http://localhost:3000/tasks/import
-  
+    // ! it is not concatenating the csv,  zeroing the database and creating again, the bug has to be solved
+    
     let body = '';
 
     req.on('data', (chunk) => {
