@@ -1,6 +1,7 @@
 import http from "http";
 import { randomUUID } from "crypto";
 import { Database } from "./database.js";
+import { parse } from 'csv-parse';
 
 const port = 3000;
 const database = new Database();
@@ -51,6 +52,8 @@ const server = http.createServer((req, res) => {
       };
       res.end(JSON.stringify(response));
     });
+  } else if (req.method === 'POST' && req.url === '/tasks/import') {
+    //* importar csv com a lib csv-parse
   } else if (req.url.startsWith("/tasks/") && req.method === "PUT") {
 
     const taskId = req.url.split("/")[2];
