@@ -52,8 +52,45 @@ const server = http.createServer((req, res) => {
       };
       res.end(JSON.stringify(response));
     });
-  } else if (req.method === 'POST' && req.url === '/tasks/import') {
+  } else if (req.url === '/tasks/import' && req.method === 'POST') {
     //* importar csv com a lib csv-parse
+    // ? Utilize o Curl
+    // ? curl -X POST -H "Content-Type: text/csv" --data-binary @arq.csv http://localhost:3000/tasks/import
+  
+    let body = '';
+
+    req.on('data', (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on('end', async () => {
+      const tasks = await parseCSV(body);
+      const database = new Database();
+
+      for (const task of tasks) {
+        console.log(task)
+        const id = randomUUID();
+        const title = task.title;
+        const description = task.description;
+        const completed_at = null;
+        const created_at = new Date().getTime();
+        const updated_at = null;
+
+        const newTask = {
+          id,
+          title,
+          description,
+          completed_at,
+          created_at,
+          updated_at,
+        };
+
+        database.insert('tasks', newTask);
+      }
+
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('Tasks imported successfully');
+    });
   } else if (req.url.startsWith("/tasks/") && req.method === "PUT") {
 
     const taskId = req.url.split("/")[2];
@@ -151,6 +188,19 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify(response));
   }
 });
+
+
+async function parseCSV(csvData) {
+  return new Promise((resolve, reject) => {
+    parse(csvData, { columns: true }, (err, records) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(records);
+      }
+    });
+  });
+}
 
 server
   .listen(port, () => {
